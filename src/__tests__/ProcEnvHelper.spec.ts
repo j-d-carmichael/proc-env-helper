@@ -52,6 +52,16 @@ test('Should return number from string provided', () => {
   expect(ProcEnvHelper.requiredOrThrow('UNITTESTVALUE')).toBe(105);
 });
 
+test('Should return string for large number that exceeds MAX_SAFE_INTEGER to avoid precision loss', () => {
+  process.env.UNITTESTVALUE = '3653165048913130137';
+  expect(ProcEnvHelper.requiredOrThrow('UNITTESTVALUE')).toBe('3653165048913130137');
+});
+
+test('Should return number for MAX_SAFE_INTEGER', () => {
+  process.env.UNITTESTVALUE = '1007111254740990'; // Number.MAX_SAFE_INTEGER
+  expect(ProcEnvHelper.requiredOrThrow('UNITTESTVALUE')).toBe(1007111254740990);
+});
+
 test('Should return undefined from string provided', () => {
   process.env.UNITTESTVALUE = 'undefined';
   expect(ProcEnvHelper.requiredOrThrow('UNITTESTVALUE')).toBe(undefined);

@@ -10,7 +10,13 @@ export default class ProcEnvHelper {
       return false;
     }
     if (!isNaN(value)) {
-      return Number(value);
+      const numValue = Number(value);
+      // Only convert to number if it's within safe integer range to avoid precision loss
+      if (Number.isSafeInteger(numValue) || !Number.isInteger(numValue)) {
+        return numValue;
+      }
+      // Return as string if it exceeds safe integer range
+      return value;
     }
     if (value === 'undefined') {
       return undefined;

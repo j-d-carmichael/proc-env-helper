@@ -1,10 +1,18 @@
 {
   "name": "proc-env-helper",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "proc-env-helper when called will require a proc env to be set or throw. Alternatively a default can be set when proc env not found.",
   "licence": "MIT",
-  "main": "./build/index.js",
-  "types": "./build/index.d.ts",
+  "main": "./build/cjs/index.js",
+  "module": "./build/esm/index.js",
+  "types": "./build/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./build/cjs/index.js",
+      "import": "./build/esm/index.js",
+      "types": "./build/cjs/index.d.ts"
+    }
+  },
   "scripts": {
     "install:githooks": "cp ./githooks/* .git/hooks",
     "test": "npm run lint && npm run test:unit",
@@ -13,7 +21,10 @@
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "lint:fix": "eslint 'src/**/*.{js,ts,tsx}' --fix",
     "build:tocs": "npx doctoc .",
-    "build": "rm -fR ./build && tsc -p . --declaration --declarationDir build",
+    "build": "rm -fR ./build && npm run build:cjs && npm run build:esm && npm run build:post",
+    "build:cjs": "tsc -p tsconfig.cjs.json --declaration --declarationDir build/cjs",
+    "build:esm": "tsc -p tsconfig.esm.json --declaration --declarationDir build/esm",
+    "build:post": "echo '{\"type\":\"commonjs\"}' > build/cjs/package.json && echo '{\"type\":\"module\"}' > build/esm/package.json",
     "build:watch": "tsc --watch -p .",
     "prepublishOnly": "npm run lint && npm run test"
   },
